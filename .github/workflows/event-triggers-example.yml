@@ -1,3 +1,4 @@
+name: event-triggers-example
 on:
   push:
     branches:
