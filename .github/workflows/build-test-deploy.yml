@@ -26,3 +26,67 @@ jobs:
           node-version: 18.x
       - run: npm ci
       - run: npm test
+  deploy:
+    needs: test
+    permissions:
+      contents: write
+      pages: write     
+      id-token: write
+    environment:
+      name: production
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          # Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.
+          node-version: 18.x
+          
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+        with:
+          static_site_generator: next
+          
+      - run: npm ci
+      
+      - run: npm run build
+      
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "./out"
+          
+      - name: Deploy GitHub Pages site
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
